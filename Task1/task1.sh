@@ -44,9 +44,19 @@ do
 
     log_action "Viewed CPU and memory usage"
     ;;
-        2)
-            echo "Top 10 Memory Consuming Processes"
-            ;;
+        
+	2)
+    echo ""
+    echo "========== Top 10 Memory Consuming Processes =========="
+    echo ""
+    printf "%-8s %-15s %-8s %-8s %-25s\n" "PID" "USER" "CPU%" "MEM%" "COMMAND"
+
+    ps -eo pid,user,%cpu,%mem,comm --sort=-%mem | head -n 11 | tail -n 10
+
+    log_action "Viewed top 10 memory consuming processes"
+    ;;
+
+
         3)
             echo "Terminate a Process"
             ;;
