@@ -58,8 +58,51 @@ do
 
 
         3)
-            echo "Terminate a Process"
-            ;;
+    echo ""
+    echo "========== Terminate a Process =========="
+
+    read -p "Enter PID of the process to terminate: " pid
+
+    if ! [[ "$pid" =~ ^[0-9]+$ ]]
+    then
+        echo "Invalid PID. Please enter a numeric PID."
+        log_action "Invalid PID entered: $pid"
+
+    elif [[ "$pid" == "1" ]]
+    then
+        echo "ERROR: PID $pid is a critical system process and cannot be terminated."
+        log_action "Blocked termination of critical process PID $pid"
+
+    elif ! ps -p "$pid" > /dev/null 2>&1
+    then
+        echo "Process with PID $pid does not exist."
+        log_action "Termination failed - PID $pid does not exist"
+
+    else
+        process_name=$(ps -p "$pid" -o comm=)
+
+        echo "Process: $process_name"
+        echo "PID: $pid"
+
+        read -p "Are you sure you want to terminate this process? (Y/N): " confirm
+
+        if [[ "$confirm" == "Y" || "$confirm" == "y" ]]
+        then
+            if kill "$pid" 2>/dev/null
+            then
+                echo "Process $pid terminated successfully."
+                log_action "Terminated process PID $pid ($process_name)"
+            else
+                echo "Failed to terminate process $pid."
+                log_action "Failed to terminate process PID $pid ($process_name)"
+            fi
+        else
+            echo "Termination cancelled."
+            log_action "Cancelled termination of PID $pid"
+        fi
+    fi
+    ;;
+
         4)
             echo "Inspect Sensor Log Directory"
             ;;
