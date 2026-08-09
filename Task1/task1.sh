@@ -102,10 +102,35 @@ do
         fi
     fi
     ;;
+        
 
-        4)
-            echo "Inspect Sensor Log Directory"
-            ;;
+    4)
+        echo ""
+        echo "========== Inspect Sensor Log Directory =========="
+        echo ""
+
+        read -p "Enter sensor log directory path: " sensor_dir
+
+        if [[ ! -d "$sensor_dir" ]]
+        then
+            echo "Directory does not exist."
+            log_action "Failed to inspect directory: $sensor_dir"
+        else
+            echo ""
+            echo "Directory: $sensor_dir"
+            echo ""
+
+            echo "Disk Usage:"
+            du -sh "$sensor_dir"
+
+            echo ""
+            echo "Log Files:"
+            find "$sensor_dir" -type f -name "*.log" -exec ls -lh {} \;
+
+            log_action "Inspected sensor log directory: $sensor_dir"
+        fi
+        ;;
+
         5)
             echo "Archive Large Log Files"
             ;;
