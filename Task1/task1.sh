@@ -131,23 +131,69 @@ do
         fi
         ;;
 
+        
         5)
-            echo "Archive Large Log Files"
-            ;;
+    echo ""
+    echo "========== Archive Large Log Files =========="
+    echo ""
+
+    read -p "Enter sensor log directory path: " archive_dir
+
+    if [[ ! -d "$archive_dir" ]]
+    then
+        echo "Directory does not exist."
+        log_action "Archive failed - directory not found: $archive_dir"
+    else
+        echo ""
+        echo "Scanning for log files larger than 50MB..."
+        echo ""
+
+        large_files=$(find "$archive_dir" -type f -name "*.log" -size +50M)
+
+        if [[ -z "$large_files" ]]
+        then
+            echo "No log files larger than 50MB found."
+            log_action "Archive scan - no large files found in $archive_dir"
+        else
+            while IFS= read -r file
+            do
+                filename=$(basename "$file")
+                timestamp=$(date '+%Y%m%d_%H%M%S')
+                archive_name="${filename%.log}_${timestamp}.tar.gz"
+
+                tar -czf "$ARCHIVE_DIR/$archive_name" -C "$(dirname "$file")" "$filename"
+
+                if [[ $? -eq 0 ]]
+                then
+                    echo "Archived: $filename -> $archive_name"
+                    log_action "Archived large log file: $filename -> $ARCHIVE_DIR/$archive_name"
+                else
+                    echo "Failed to archive: $filename"
+                    log_action "Failed to archive log file: $filename"
+                fi
+            done <<< "$large_files"
+        fi
+    fi
+    ;;
+
         6)
-            echo "Check ArchiveLogs Storage"
-            ;;
-        Bye|bye)
-            read -p "Are you sure you want to exit? (Y/N): " confirm
-            if [[ "$confirm" == "Y" || "$confirm" == "y" ]]
-            then
-                log_action "System exited by user"
-                echo "Goodbye!"
-                exit 0
-            else
-                echo "Exit cancelled."
-            fi
-            ;;
+    echo ""
+    echo "========== ArchiveLogs Storage =========="
+    echo ""
+
+    archive_size_kb=$(du -sk "$ARCHIVE_DIR" | cut -f1)
+    archive_size_human=$(du -sh "$ARCHIVE_DIR" | cut -f1)
+
+    echo "ArchiveLogs total size: $archive_size_human"
+
+    if [[ "$archive_size_kb" -gt 1048576 ]]
+    then
+        echo "WARNING: ArchiveLogs directory exceeds 1GB!"
+        log_action "WARNING - ArchiveLogs exceeded 1GB (Size: $archive_size_human)"
+    else
+        log_action "Checked ArchiveLogs storage (Size: $archive_size_human)"
+    fi
+    ;;
         *)
             echo "Invalid choice. Please try again."
             ;;
