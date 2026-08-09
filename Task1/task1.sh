@@ -36,7 +36,7 @@ do
 
     echo ""
     echo "CPU Usage:"
-    top -bn1 | grep "Cpu(s)" | awk '{print "CPU Used: " $2 + $4 "%"}'
+    top -bn2 -d 0.5 | grep "Cpu(s)" | tail -1 | awk '{print "CPU Used: " $2 + $4 "%"}'
 
     echo ""
     echo "Memory Usage:"
@@ -44,7 +44,7 @@ do
 
     log_action "Viewed CPU and memory usage"
     ;;
-        
+
 	2)
     echo ""
     echo "========== Top 10 Memory Consuming Processes =========="
@@ -68,7 +68,7 @@ do
         echo "Invalid PID. Please enter a numeric PID."
         log_action "Invalid PID entered: $pid"
 
-    elif [[ "$pid" == "1" ]]
+    elif [[ "$pid" == "1" ]] || [[ "$pid" -lt 100 ]]
     then
         echo "ERROR: PID $pid is a critical system process and cannot be terminated."
         log_action "Blocked termination of critical process PID $pid"
@@ -102,7 +102,7 @@ do
         fi
     fi
     ;;
-        
+
 
     4)
         echo ""
