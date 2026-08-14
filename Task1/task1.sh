@@ -194,6 +194,23 @@ do
         log_action "Checked ArchiveLogs storage (Size: $archive_size_human)"
     fi
     ;;
+
+        Bye|bye|BYE)
+    echo ""
+    echo "========== Exit System =========="
+    read -p "Are you sure you want to exit? (Y/N): " confirm
+
+    if [[ "$confirm" == "Y" || "$confirm" == "y" ]]
+    then
+        echo "Exiting Smart Campus IoT Device Management. Goodbye!"
+        log_action "System exited by administrator"
+        break
+    else
+        echo "Exit cancelled."
+        log_action "Exit cancelled by administrator"
+    fi
+    ;;
+
         *)
             echo "Invalid choice. Please try again."
             ;;
