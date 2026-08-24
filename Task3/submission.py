@@ -42,9 +42,19 @@ def log_submission(event):
 
 
 def log_login(username, event):
+    """
+    Login events are written to BOTH files:
+      - submission_log.txt  -> required by the assignment rubric, which states
+        that ALL submission AND login events must be recorded in submission_log.txt
+      - login_log.txt       -> kept as a dedicated, easier-to-audit login trail
+    """
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
     with open(LOGIN_LOG_FILE, "a") as f:
         f.write(f"{timestamp} - User: {username} - {event}\n")
+
+    # Mirror into submission_log.txt to satisfy the rubric wording
+    log_submission(f"LOGIN - User: {username} - {event}")
 
 
 def compute_file_hash(filepath):

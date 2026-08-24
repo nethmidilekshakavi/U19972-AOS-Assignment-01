@@ -25,7 +25,7 @@ do
     echo "4. Inspect Sensor Log Directory"
     echo "5. Archive Large Log Files"
     echo "6. Check ArchiveLogs Storage"
-    echo "Bye. Exit System"
+    echo "7. Bye. Exit System"
     echo "======================================"
     read -p "Enter your choice: " choice
 
@@ -127,6 +127,18 @@ do
             echo "Log Files:"
             find "$sensor_dir" -type f -name "*.log" -exec ls -lh {} \;
 
+            echo ""
+            echo "Log Files Larger than 50MB:"
+            large_found=$(find "$sensor_dir" -type f -name "*.log" -size +50M)
+
+            if [[ -z "$large_found" ]]
+            then
+                echo "  None found."
+            else
+                find "$sensor_dir" -type f -name "*.log" -size +50M -exec ls -lh {} \; | \
+                    awk '{print "  [OVER 50MB] " $0}'
+            fi
+
             log_action "Inspected sensor log directory: $sensor_dir"
         fi
         ;;
@@ -195,7 +207,7 @@ do
     fi
     ;;
 
-        Bye|bye|BYE)
+        7|Bye|bye|BYE)
     echo ""
     echo "========== Exit System =========="
     read -p "Are you sure you want to exit? (Y/N): " confirm
