@@ -1,20 +1,19 @@
-# Runtime-generated data
-Task1/ArchiveLogs/
-Task1/SensorLogs/
+# Task 1 runtime output
 Task1/system_monitor_log.txt
-Task2/completed_jobs.txt
+Task1/ArchiveLogs/
+
+# Task 2 runtime output
 Task2/job_queue.txt
+Task2/completed_jobs.txt
 Task2/scheduler_log.txt
+
+# Task 3 runtime output
 Task3/submissions/
 Task3/submissions_metadata.txt
 Task3/submission_log.txt
 Task3/login_log.txt
 
-# Test/dummy files
-Task3/test1.pdf
-Task3/test2.txt
-Task3/bigfile.pdf
-
-# Python cache
-Task3/__pycache__/
+# OS/editor junk
+.DS_Store
+__pycache__/
 *.pyc
